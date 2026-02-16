@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 import { Modal, Divider, Typography, Skeleton, notification } from "antd";
 import EmptyState from "@/app/Components/Custom/emty";
 import CongratulationsPage from "@/app/Components/Custom/chucmung";
 import { ShareAltOutlined } from "@ant-design/icons";
 import { ideaQuestion } from "../../lib/auth";
-import { useEffect } from "react";
 
 const { Text } = Typography;
 const EXAM_KEY = "exam_state";
@@ -79,14 +78,15 @@ export default function TrangThi({
 }: {
   mode: "off" | "on" | "success";
 }) {
+  // ✅ FIX SSR
   const [questions] = useState<Question[]>(() => {
+    if (typeof window === "undefined") return [];
     const raw = sessionStorage.getItem("examResult");
     return raw ? JSON.parse(raw).questions || [] : [];
   });
 
-  const [answers, setAnswers] = useState<
-    Record<number, any>
-  >(() => {
+  const [answers, setAnswers] = useState<Record<number, any>>(() => {
+    if (typeof window === "undefined") return {};
     const raw = sessionStorage.getItem(EXAM_KEY);
     return raw ? JSON.parse(raw).answers || {} : {};
   });
@@ -100,6 +100,8 @@ export default function TrangThi({
     hintQuestionIndex !== null ? questions[hintQuestionIndex] : null;
 
   const saveAnswerToStorage = (newAnswers: any) => {
+    if (typeof window === "undefined") return;
+
     const raw = sessionStorage.getItem(EXAM_KEY);
     if (raw) {
       const state = JSON.parse(raw);
@@ -109,6 +111,8 @@ export default function TrangThi({
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     if (mode === "off") {
       setAnswers({});
       const raw = sessionStorage.getItem(EXAM_KEY);
@@ -120,7 +124,6 @@ export default function TrangThi({
     }
   }, [mode]);
 
-  // SINGLE
   const handleSingleAnswer = (qIndex: number, label: string) => {
     if (mode !== "on") return;
 
@@ -131,7 +134,6 @@ export default function TrangThi({
     });
   };
 
-  // MULTIPLE
   const handleMultipleAnswer = (qIndex: number, label: string) => {
     if (mode !== "on") return;
 
@@ -147,7 +149,6 @@ export default function TrangThi({
     });
   };
 
-  // TRUE FALSE
   const handleTrueFalseAnswer = (
     qIndex: number,
     optionLabel: string,
@@ -157,23 +158,13 @@ export default function TrangThi({
 
     setAnswers((prev: any) => {
       const current = prev[qIndex] || {};
-
-      const updated = {
-        ...current,
-        [optionLabel]: value,
-      };
-
-      const newAnswers = {
-        ...prev,
-        [qIndex]: updated,
-      };
-
+      const updated = { ...current, [optionLabel]: value };
+      const newAnswers = { ...prev, [qIndex]: updated };
       saveAnswerToStorage(newAnswers);
       return newAnswers;
     });
   };
 
-  // TEXT (fill / essay)
   const handleTextAnswer = (qIndex: number, value: string) => {
     if (mode !== "on") return;
 
@@ -185,6 +176,8 @@ export default function TrangThi({
   };
 
   const handleIdeaQuestion = async (qIndex: number) => {
+    if (typeof window === "undefined") return;
+
     const q = questions[qIndex];
     if (!q) return;
 
@@ -219,6 +212,7 @@ export default function TrangThi({
       setLoadingIdea(false);
     }
   };
+
   const handleShareExam = () => {
     notification.success({
       message: "Chia sẻ thành công 🎉",
@@ -228,7 +222,6 @@ export default function TrangThi({
       duration: 4,
     });
   };
-
 
   if (!questions.length) {
     return <EmptyState description="Bạn chưa tạo đề thi nào!" />;
