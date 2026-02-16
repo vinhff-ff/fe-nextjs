@@ -1,16 +1,19 @@
 "use client";
 
 import { Spin } from "antd";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default function XacThucPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const domain = process.env.NEXT_PUBLIC_DB_URL
+  const domain = process.env.NEXT_PUBLIC_DB_URL;
+
   useEffect(() => {
-    const accessToken = searchParams.get("accessToken");
-    const refreshToken = searchParams.get("refreshToken");
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get("accessToken");
+    const refreshToken = params.get("refreshToken");
 
     if (!accessToken || !refreshToken) {
       router.replace(`${domain}/api/auth/google`);
@@ -32,9 +35,19 @@ export default function XacThucPage() {
     ].join("; ");
 
     window.history.replaceState({}, "", "/");
-
     router.replace("/");
-  }, []);
+  }, [router, domain]);
 
-  return <div style={{display:"flex", justifyContent:'center', alignItems:'center', height:'100vh'}}><Spin size="large"/></div>;
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <Spin size="large" />
+    </div>
+  );
 }
