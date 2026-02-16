@@ -16,7 +16,7 @@ export default function XacThucPage() {
     const refreshToken = params.get("refreshToken");
 
     if (!accessToken || !refreshToken) {
-      router.replace(`${domain}/api/auth/google`);
+      router.replace(`${domain}/oauth2/authorization/google`);
       return;
     }
 
