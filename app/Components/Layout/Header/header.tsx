@@ -26,7 +26,7 @@ export default async function Header() {
       <div className="login">
         {!isLogin ? (
           <Link
-            href={`${domain}/api/auth/google`}
+            href={`${domain}/oauth2/authorization/google`}
             style={{ textDecoration: "none" }}
           >
             <ButtonCustom className="login-btn lgmb">
