@@ -9,7 +9,8 @@ export default async function DeThiHot() {
   const pageNumber = 1;
   const limit = 6;
 
-  const { data } = await getPublicExams(pageNumber, limit);
+  const res = await getPublicExams(pageNumber, limit);
+  const data = res?.data ?? [];
 
   return (
     <div className="de-thi-hot">
@@ -26,7 +27,7 @@ export default async function DeThiHot() {
 
       <div className="xemThem">
         <Link href="/tong-hop-de-thi">
-          Xem thêm <ArrowRightOutlined style={{fontSize:'16px'}}/>
+          Xem thêm <ArrowRightOutlined style={{ fontSize: "16px" }} />
         </Link>
       </div>
     </div>

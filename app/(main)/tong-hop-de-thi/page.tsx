@@ -16,7 +16,11 @@ export default async function Page() {
   const pageNumber = 1;
   const limit = 12;
 
-  const { data, total } = await getPublicExams(pageNumber, limit);
+  const res = await getPublicExams(pageNumber, limit);
+
+  const data = res?.data ?? [];
+  const total = res?.total ?? 0;
+
   const totalPages = Math.ceil(total / limit);
 
   return (

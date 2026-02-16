@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { getPublicExams } from "@/app/lib/seo";
 import { notFound } from "next/navigation";
 import Pagination from "../PaginationSeo";
@@ -7,12 +6,11 @@ import ExamCardItem from "../helper/cardSeo";
 export const revalidate = 300;
 
 type PageProps = {
-  params: Promise<{ page: string }>;
+  params: { page: string };
 };
 
 export async function generateMetadata({ params }: PageProps) {
-  const { page } = await params;
-  const pageNumber = Number(page);
+  const pageNumber = Number(params.page);
 
   if (isNaN(pageNumber) || pageNumber < 2) {
     return {};
@@ -28,18 +26,21 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function Page({ params }: PageProps) {
-  const { page } = await params;
-  const pageNumber = Number(page);
+  const pageNumber = Number(params.page);
   const limit = 12;
 
   if (isNaN(pageNumber) || pageNumber < 2) {
     return notFound();
   }
 
-  const { data, total } = await getPublicExams(pageNumber, limit);
+  const res = await getPublicExams(pageNumber, limit);
+
+  const data = res?.data ?? [];
+  const total = res?.total ?? 0;
+
   const totalPages = Math.ceil(total / limit);
 
-  if (pageNumber > totalPages) {
+  if (totalPages > 0 && pageNumber > totalPages) {
     return notFound();
   }
 
