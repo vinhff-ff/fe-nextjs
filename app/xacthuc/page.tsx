@@ -24,7 +24,7 @@ export default function XacThucPage() {
       `access_token=${accessToken}`,
       "path=/",
       "max-age=3600",
-      "samesite=lax",
+      "samesite=lax", 
     ].join("; ");
 
     document.cookie = [

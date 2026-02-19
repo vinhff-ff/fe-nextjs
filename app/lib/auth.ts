@@ -81,9 +81,27 @@ export async function getHistory() {
   return data;
 }
 
-export async function getExam(id:any) {
+export async function getExam(id: any) {
   const data = await callApi<any>(`/api/exam-sets/redo/${id}`, {
     method: "GET",
+  });
+  return data;
+}
+
+
+// admin
+export async function adminUpdate(id: any, body: any) {
+  const data = await callApi<any>(`/api/admin/update/post/${id}`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+  return data;
+}
+
+export async function adminGetList(body: any) {
+  const data = await callApi<any>(`/api/exams/public`, {
+    method: "POST",
+    body: JSON.stringify(body),
   });
   return data;
 }

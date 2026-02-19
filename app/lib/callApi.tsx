@@ -78,9 +78,9 @@ export async function callApi<T>(
 ): Promise<T> {
   const accessToken = getCookie("access_token");
 
-  if (!accessToken) {
-    throw new Error("Bạn cần đăng nhập để tiếp tục!");
-  }
+  // if (!accessToken) {
+  //   throw new Error("Bạn cần đăng nhập để tiếp tục!");
+  // }
 
   const isFormData = options.body instanceof FormData;
 
