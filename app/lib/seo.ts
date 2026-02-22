@@ -27,7 +27,7 @@ export async function getPublicExams(
       page,
       page_size: pageSize,
     }),
-    next: { revalidate: 300 },
+    next: { revalidate: 60 },
   });
 
   if (!res.ok) {

@@ -47,6 +47,8 @@ const QuanLiDeThiPage = () => {
       const res = await adminGetList({
         page,
         page_size: pageSize,
+        search: "",
+        is_public: null,
       });
 
       setData(res.data || []);
@@ -95,7 +97,7 @@ const QuanLiDeThiPage = () => {
     {
       title: "Công khai",
       dataIndex: "is_public",
-      render: (value) => (value === 1 ? "Có" : "Không"),
+      render: (value) => (value === 2 ? "Có" : "Không"),
     },
     {
       title: "Ngày tạo",
@@ -107,12 +109,12 @@ const QuanLiDeThiPage = () => {
       width: 150,
       render: (_, record) => (
         <Space>
-          <Tooltip title="Xem">
+          {/* <Tooltip title="Xem">
             <EyeOutlined
               style={{ color: "#1677ff", cursor: "pointer" }}
               onClick={() => handleOpenModal("view", record)}
             />
-          </Tooltip>
+          </Tooltip> */}
 
           <Tooltip title="Sửa tiêu đề" >
             <EditOutlined
@@ -121,7 +123,7 @@ const QuanLiDeThiPage = () => {
             />
           </Tooltip>
 
-          <Tooltip title="Sửa đề thi">
+          {/* <Tooltip title="Sửa đề thi">
             <EditOutlined
               style={{ color: "#000", cursor: "pointer" }}
               onClick={() => handleOpenModal("edit", record)}
@@ -133,7 +135,7 @@ const QuanLiDeThiPage = () => {
               style={{ color: "#ff4d4f", cursor: "pointer" }}
               onClick={() => handleOpenModal("delete", record)}
             />
-          </Tooltip>
+          </Tooltip> */}
         </Space>
       ),
     },
@@ -206,8 +208,8 @@ const QuanLiDeThiPage = () => {
             <Form.Item label="Công khai" name="is_public">
               <Select
                 options={[
-                  { label: "Có", value: 1 },
-                  { label: "Không", value: 2 },
+                  { label: "Có", value: 2 },
+                  { label: "Không", value: 1 },
                 ]}
               />
             </Form.Item>

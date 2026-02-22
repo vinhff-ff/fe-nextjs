@@ -1,37 +1,36 @@
-import Image from 'next/image';
-import Logo from '../../../Assets/logo.png'
 export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer__container">
-        <div className="footer__logo-section">
-          <div className="footer__logo-wrapper">
-            <span>CỘNG ĐỒNG ÔN THI</span>
-          </div>
-          <div className='footer__content-wrapper'>
+        <div className="footer__content">
+          <div className="footer__logo-section">
+            <div className="footer__logo">
+              <span className="footer__brand-name">CỘNG ĐỒNG ÔN THI</span>
+            </div>
             <p className="footer__description">
-              Cộng đồng ôn thi là nền tảng cộng đồng ôn thi trực tuyến, cho phép người học chuyển ảnh đề thi thành bài thi online, dễ dàng chia sẻ đề thi và làm bài trực tiếp cùng hàng nghìn người khác. Nền tảng giúp người học luyện tập hiệu quả, rèn kỹ năng làm bài và chuẩn bị tốt cho các kỳ thi quan trọng
+              Nền tảng luyện đề online, cho phép chuyển ảnh đề thành bài thi trực tuyến, dễ dàng chia sẻ và cùng hàng nghìn người luyện tập, nâng cao kỹ năng, sẵn sàng cho kỳ thi quan trọng
             </p>
-            <div className="footer__websites">
-              <h2>Các website của chúng tôi</h2>
-              <div className="footer__website-list">
-                <a
-                  href="https://giasusupham1.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer__website-link"
-                >
-                  congdonggiasu.com
-                </a>
-                <a
-                  href="https://vnews.vercel.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer__website-link"
-                >
-                  gocsongao
-                </a>
-              </div>
+          </div>
+
+          <div className="footer__explore-section">
+            <h3 className="footer__explore-title">KHÁM PHÁ</h3>
+            <div className="footer__links">
+              <a
+                href="https://chiasechuyendi.online"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer__link"
+              >
+                Chia sẻ chuyến đi
+              </a>
+              <a
+                href="https://hoctap.online"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer__link"
+              >
+                Góc Sống Ảo
+              </a>
             </div>
           </div>
         </div>
@@ -40,7 +39,11 @@ export default function Footer() {
       <div className="footer__divider"></div>
 
       <div className="footer__bottom">
-        <p>© {new Date().getFullYear()} congdongonthi.com. Tất cả các quyền được bảo lưu.</p>
+        <div className="footer__container">
+          <p className="footer__copyright">
+            © {new Date().getFullYear()} congdongonthi.com. Tất cả các quyền được bảo lưu.
+          </p>
+        </div>
       </div>
     </footer>
   );

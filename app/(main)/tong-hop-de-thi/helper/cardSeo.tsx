@@ -27,6 +27,7 @@ export default function ExamCardItem({ item }: Props) {
       href="/trang-thi"
       className="linkThi"
       onClick={handleClick}
+      style={{textDecoration:'none'}}
     >
       <CardCustom
         image=""

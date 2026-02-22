@@ -6,11 +6,15 @@ import ExamCardItem from "../helper/cardSeo";
 export const revalidate = 300;
 
 type PageProps = {
-  params: { page: string };
+  params: Promise<{ page: string }>;
 };
 
+/* ===========================
+   SEO Metadata
+=========================== */
 export async function generateMetadata({ params }: PageProps) {
-  const pageNumber = Number(params.page);
+  const { page } = await params;
+  const pageNumber = Number(page);
 
   if (isNaN(pageNumber) || pageNumber < 2) {
     return {};
@@ -25,10 +29,15 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
+/* ===========================
+   Page Component
+=========================== */
 export default async function Page({ params }: PageProps) {
-  const pageNumber = Number(params.page);
+  const { page } = await params;
+  const pageNumber = Number(page);
   const limit = 12;
 
+  // Validate page
   if (isNaN(pageNumber) || pageNumber < 2) {
     return notFound();
   }
@@ -48,10 +57,7 @@ export default async function Page({ params }: PageProps) {
     <div className="container-de-thi-chia-se-tf">
       <div className="card-grid">
         {data.map((item) => (
-          <ExamCardItem
-            key={item.id}
-            item={item}
-          />
+          <ExamCardItem key={item.id} item={item} />
         ))}
       </div>
 

@@ -120,28 +120,61 @@ export default function TaoDeThi() {
         startFakeProgress();
 
         try {
-
             const fileList: File[] = await Promise.all(
                 base64Images.map((img, index) =>
                     base64ToFile(img, `exam-${index + 1}.png`)
                 )
             );
 
-            const data = await analyzeExam(fileList, "exam");
+            const chunkSize = 2;
+            const chunks: File[][] = [];
+
+            for (let i = 0; i < fileList.length; i += chunkSize) {
+                chunks.push(fileList.slice(i, i + chunkSize));
+            }
+
+            let mergedQuestions: any[] = [];
+
+            for (let i = 0; i < chunks.length; i++) {
+                const res = await analyzeExam(chunks[i], "exam");
+
+                if (res?.questions && Array.isArray(res.questions)) {
+                    mergedQuestions = [
+                        ...mergedQuestions,
+                        ...res.questions,
+                    ];
+                }
+            }
+
+            const formattedQuestions = mergedQuestions.map((q, index) => ({
+                content: q.content,
+                level: q.level,
+                options: q.options || [],
+                order: index + 1,
+                parent_order: q.parent_order || null,
+                type: q.type,
+            }));
+
+            const finalResult = {
+                questions: formattedQuestions,
+            };
+
+            sessionStorage.setItem("examResult", JSON.stringify(finalResult));
+            sessionStorage.removeItem("exam_state");
+            sessionStorage.removeItem("exam_hints");
+            sessionStorage.removeItem("examAgain");
 
             stopProgress();
+            setLoading(false);
 
             notification.success({
                 message: "Tạo đề thi thành công",
             });
 
-            sessionStorage.setItem("examResult", JSON.stringify(data));
-            sessionStorage.removeItem("exam_state");
-            sessionStorage.removeItem("exam_hints");
-            sessionStorage.removeItem("examAgain");
             setTimeout(() => {
                 router.push("/trang-thi");
             }, 500);
+
         } catch (error: any) {
             if (timerRef.current) clearInterval(timerRef.current);
             setLoading(false);

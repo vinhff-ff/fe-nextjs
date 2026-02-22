@@ -11,14 +11,9 @@ export default function BgSilde1() {
   return (
     <div className="home-BgSilde1">
       <div className="home-content">
-        <h1 className="title">Cộng đồng ôn thi</h1>
-
+        <h1 className="title">Cộng đồng ôn thi - học thông minh, thi hiệu quả</h1>
         <p className="desc">
-          Cộng đồng ôn thi là nền tảng cộng đồng ôn thi trực tuyến, cho phép người
-          học chuyển ảnh đề thi thành bài thi online, dễ dàng chia sẻ đề thi và
-          làm bài trực tiếp cùng hàng nghìn người khác. Nền tảng giúp người học
-          luyện tập hiệu quả, rèn kỹ năng làm bài và chuẩn bị tốt cho các kỳ thi
-          quan trọng.
+          Số hóa đề thi giấy thành trải nghiệm thi online
         </p>
 
         <div className="actions">

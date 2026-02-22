@@ -91,7 +91,7 @@ export async function getExam(id: any) {
 
 // admin
 export async function adminUpdate(id: any, body: any) {
-  const data = await callApi<any>(`/api/admin/update/post/${id}`, {
+  const data = await callApi<any>(`/api/admin/exams/update/${id}`, {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -99,7 +99,7 @@ export async function adminUpdate(id: any, body: any) {
 }
 
 export async function adminGetList(body: any) {
-  const data = await callApi<any>(`/api/exams/public`, {
+  const data = await callApi<any>(`/api/admin/exams`, {
     method: "POST",
     body: JSON.stringify(body),
   });

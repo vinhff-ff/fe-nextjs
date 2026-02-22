@@ -1,15 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Drawer } from "antd";
-import { DownOutlined, LogoutOutlined, MenuOutlined, UpOutlined, UserOutlined } from "@ant-design/icons";
+import { usePathname, useRouter } from "next/navigation";
+import { Drawer, Spin } from "antd";
+import {
+  DownOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { menuList } from "./menu";
 import ButtonCustom from "../../Custom/button";
 import { getUserInfo } from "./../../../lib/auth";
 import DropdownCustom from "../../Custom/dropdown";
-import { useRouter } from "next/navigation";
+
 type UserUI = {
   username: string;
   avatar: string;
@@ -25,25 +30,39 @@ export default function MenuClient({
   isDesktop = false,
 }: Props) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const domain = process.env.NEXT_PUBLIC_DB_URL;
   const router = useRouter();
+  const domain = process.env.NEXT_PUBLIC_DB_URL;
+
+  const [open, setOpen] = useState(false);
   const [user, setUser] = useState<UserUI | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const isLogin = !!user;
 
   useEffect(() => {
-    getUserInfo()
-      .then(setUser)
-      .catch(() => {
-        setUser(null);
-      });
+    let isMounted = true;
+
+    const fetchUser = async () => {
+      try {
+        const data = await getUserInfo();
+        if (isMounted) setUser(data);
+      } catch {
+        if (isMounted) setUser(null);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchUser();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  const 
-  handleLogout = () => {
+  const handleLogout = () => {
     router.push("/logout");
   };
-
 
   const renderMenu = (onClick?: () => void) => (
     <ul>
@@ -65,41 +84,63 @@ export default function MenuClient({
     </ul>
   );
 
-  if (isDesktop && isLogin && user) {
-    return (
-      <DropdownCustom
-        placement="bottomRight"
-        trigger={
-          <span className="avatar-wrapper-header">
-            <img
-              src={user.avatar}
-              alt="avatar"
-              className="avatar-img"
-            />
-            <span className="avatar-down">
-              <DownOutlined />
+  /* ================= DESKTOP ================= */
+
+  if (isDesktop) {
+    if (loading) {
+      return (
+        <div style={{ width: 40, display: "flex", justifyContent: "center" }}>
+          <Spin size="small" />
+        </div>
+      );
+    }
+
+    if (isLogin && user) {
+      return (
+        <DropdownCustom
+          placement="bottomRight"
+          trigger={
+            <span className="avatar-wrapper-header">
+              <img
+                src={user.avatar}
+                alt="avatar"
+                className="avatar-img"
+              />
+              <span className="avatar-down">
+                <DownOutlined />
+              </span>
             </span>
-          </span>
-        }
-        items={[
-          {
-            key: "profile",
-            label: "Trang cá nhân ",
-            icon: <UserOutlined />,
-            onClick: () => router.push("/trang-ca-nhan")
-          },
-          {
-            key: "logout",
-            label: "Đăng xuất ",
-            icon: <LogoutOutlined />,
-            danger: true,
-            onClick: handleLogout,
-          },
-        ]}
-      />
+          }
+          items={[
+            {
+              key: "profile",
+              label: "Trang cá nhân",
+              icon: <UserOutlined />,
+              onClick: () => router.push("/trang-ca-nhan"),
+            },
+            {
+              key: "logout",
+              label: "Đăng xuất",
+              icon: <LogoutOutlined />,
+              danger: true,
+              onClick: handleLogout,
+            },
+          ]}
+        />
+      );
+    }
+
+    return (
+      <Link
+        href={domain + `/oauth2/authorization/google`}
+        style={{ textDecoration: "none" }}
+      >
+        <ButtonCustom className="login-btn">Đăng nhập</ButtonCustom>
+      </Link>
     );
   }
 
+  /* ================= MOBILE ================= */
 
   if (!isMobile) {
     return <>{renderMenu()}</>;
@@ -119,19 +160,22 @@ export default function MenuClient({
         <div className="drawer-menu">
           {renderMenu(() => setOpen(false))}
 
-          {isLogin && user ? (
+          {loading ? (
+            <div style={{ marginTop: 20, textAlign: "center" }}>
+              <Spin />
+            </div>
+          ) : isLogin && user ? (
             <>
               <div
                 className="nameUser"
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 0,
                   marginTop: 16,
-                  flexDirection: 'column'
+                  flexDirection: "column",
                 }}
               >
-                <Link href={'/trang-ca-nhan'}>
+                <Link href="/trang-ca-nhan">
                   <img
                     src={user.avatar}
                     alt="avatar"
@@ -140,10 +184,24 @@ export default function MenuClient({
                     style={{ borderRadius: "50%" }}
                   />
                 </Link>
-                <Link href={'/trang-ca-nhan'} style={{ fontSize: '20px', color: '#0958d9', textDecoration: 'underline' }}>{user.username}</Link >
+
+                <Link
+                  href="/trang-ca-nhan"
+                  style={{
+                    fontSize: "20px",
+                    color: "#0958d9",
+                    textDecoration: "underline",
+                  }}
+                >
+                  {user.username}
+                </Link>
               </div>
 
-              <ButtonCustom onClick={handleLogout} style={{ marginTop: 12 }} className="btn-logout">
+              <ButtonCustom
+                onClick={handleLogout}
+                style={{ marginTop: 12 }}
+                className="btn-logout"
+              >
                 <LogoutOutlined /> Đăng xuất
               </ButtonCustom>
             </>
