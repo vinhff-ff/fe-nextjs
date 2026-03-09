@@ -1,5 +1,5 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-
+import { notification } from "antd";
 type FetchFunction = (id: any) => Promise<any>;
 
 export const startExam = async (
@@ -23,7 +23,10 @@ export const startExam = async (
 
     return res;
   } catch (error) {
-    console.error("Start exam error:", error);
-    throw error;
+    notification.error({
+      message: "Đã có lỗi xảy ra",
+      description: "Bạn cần đăng nhập để tiếp tục!",
+    });
+    throw error
   }
 };
